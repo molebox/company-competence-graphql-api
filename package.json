@@ -4,17 +4,30 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --transpile-only --no-notify api/app.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/molebox/company-competence-graphql-api.git"
   },
   "keywords": [],
-  "author": "Hungry Bear Studio <roar@hungrybearstudio.com> (hungrybearstudio.com)",
+  "author": "Rich Haines",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/molebox/company-competence-graphql-api/issues"
   },
-  "homepage": "https://github.com/molebox/company-competence-graphql-api#readme"
+  "homepage": "https://github.com/molebox/company-competence-graphql-api#readme",
+  "devDependencies": {
+    "prisma": "^2.17.0",
+    "ts-node-dev": "^1.1.1",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.17.0",
+    "apollo-server": "^2.21.0",
+    "graphql": "^15.5.0",
+    "nexus": "^1.0.0"
+  }
 }
