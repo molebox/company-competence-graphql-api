@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --transpile-only --no-notify api/app.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "push": "npx prisma migrate dev --preview-feature"
   },
   "repository": {
     "type": "git",

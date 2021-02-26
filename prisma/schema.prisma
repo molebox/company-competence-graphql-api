@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// one to many relationship between industry and company. An industry can have many companies, where as a company can belong to only one industry
+
+// video on relations: https://www.youtube.com/watch?v=jeHJbYLCgzI&ab_channel=Prisma
+
+// 1-n with trade and role
+// company can have many roles
+// company can have many trades
+model Company {
+  id            Int      @id @default(autoincrement())
+  name          String?
+  contactPerson String?
+  bio           String?
+  email         String?
+  website       String?
+  industry      Industry? @relation(fields: [industryId], references: [id])
+  industryId    Int?
+  trades        Trade[]
+  roles         Role[]
+}
+
+// 1-n with company - industry can have many companies
+model Industry {
+  id        Int       @id @default(autoincrement())
+  name      String?
+  companies Company[]
+}
+
+// n-1 with company, a company can have many trades
+model Trade {
+  id        Int     @id @default(autoincrement())
+  name      String?
+  company   Company? @relation(fields: [companyId], references: [id]) // not in db, used by prisma to set relation
+  companyId Int? // the foreign key, this is in the db
+}
+
+// 1-n with skill, n-1 with company
+// a role can have many skills
+// a company can have many roles
+model Role {
+  id        Int     @id @default(autoincrement())
+  name      String?
+  skills    Skill[]
+  company   Company? @relation(fields: [companyId], references: [id]) // not in db, used by prisma to set relation
+  companyId Int? // the foreign key, this is in the db
+}
+
+// 1-n with role
+model Skill {
+  id     Int    @id @default(autoincrement())
+  name   String?
+  role   Role?   @relation(fields: [roleId], references: [id])
+  roleId Int?
+}
+
+// model One {
+//   id   Int  @id @default(autoincrement())
+//   many Many[]
+// }
+
+// model Many {
+//   id               Int @id @default(autoincrement())
+//   oneRelation      One @relation(fields: [foreignKey], references: [id])
+//   foreignKey       Int
+// }
