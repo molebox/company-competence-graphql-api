@@ -14,18 +14,33 @@ type Company {
   website: String
 }
 
+input CompanyInputType {
+  bio: String
+  contactPerson: String
+  email: String
+  name: String
+  roles: [RoleInputType]
+  trades: [TradeInputType]
+  website: String
+}
+
 type Industry {
   companies: [Company]
   id: Int
   name: String
 }
 
+input IndustryInputType {
+  companies: [CompanyInputType]
+  name: String
+}
+
 type Mutation {
-  createCompany(bio: String!, contactPerson: String!, email: String!, name: String!, website: String!): Company!
+  createCompany(bio: String!, contactPerson: String!, email: String!, id: Int, name: String!, roles: [RoleInputType], trades: [TradeInputType], website: String!): Company!
   createIndustry(name: String!): Industry
   createRole(name: String!): Role
   createSkill(name: String!): Skill
-  createTrade(name: String!): Trade
+  createTrade(company: CompanyInputType, name: String!): Trade
   deleteCompany(id: Int!): Company
   deleteIndustry(id: Int!): Industry
   deleteRole(id: Int!): Role
@@ -56,14 +71,30 @@ type Role {
   name: String
 }
 
+input RoleInputType {
+  company: CompanyInputType
+  name: String
+  skills: [SkillInputType]
+}
+
 type Skill {
   id: Int!
   name: String
   role: Role
 }
 
+input SkillInputType {
+  name: String
+  roles: [RoleInputType]
+}
+
 type Trade {
   company: Company
   id: Int!
+  name: String
+}
+
+input TradeInputType {
+  company: CompanyInputType
   name: String
 }

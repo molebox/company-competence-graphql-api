@@ -1,4 +1,13 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { arg, extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { RoleMutation } from './role';
+
+export const TradeInputType = inputObjectType({
+    name: 'TradeInputType',
+    definition(t) {
+        t.string('name')
+        t.field('company', {type: 'CompanyInputType'})
+    }
+})
 
 export const Trade = objectType({
     name: 'Trade',
@@ -49,11 +58,24 @@ export const TradeMutation = extendType({
             type: 'Trade',
             args: {
                 name: nonNull(stringArg()),
+                company: arg({
+                    type: 'CompanyInputType'
+                })
             },
             resolve(_root, args, ctx) {
+                const newCompany = {
+                    name: args.company?.name,
+                    email: args.company?.email,
+                    bio: args.company?.bio,
+                    website: args.company?.website,
+                    contactPerson: args.company?.contactPerson
+                }
                 return ctx.db.trade.create({
                     data: {
                         name: args.name,
+                        company: {
+                            create: newCompany
+                        }
                     }
                 })
             }

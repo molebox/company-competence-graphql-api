@@ -1,4 +1,12 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+
+export const IndustryInputType = inputObjectType({
+    name: 'IndustryInputType',
+    definition(t) {
+        t.string('name')
+        t.list.field('companies', {type: 'CompanyInputType'})
+    }
+})
 
 export const Industry = objectType({
     name: 'Industry',

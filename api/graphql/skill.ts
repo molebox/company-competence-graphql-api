@@ -1,4 +1,12 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+
+export const SkillInputType = inputObjectType({
+    name: 'SkillInputType',
+    definition(t) {
+        t.string('name')
+        t.list.field('roles', {type: 'RoleInputType'})
+    }
+})
 
 export const Skill = objectType({
     name: 'Skill',

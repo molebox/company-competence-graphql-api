@@ -14,6 +14,32 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CompanyInputType: { // input type
+    bio?: string | null; // String
+    contactPerson?: string | null; // String
+    email?: string | null; // String
+    name?: string | null; // String
+    roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
+    trades?: Array<NexusGenInputs['TradeInputType'] | null> | null; // [TradeInputType]
+    website?: string | null; // String
+  }
+  IndustryInputType: { // input type
+    companies?: Array<NexusGenInputs['CompanyInputType'] | null> | null; // [CompanyInputType]
+    name?: string | null; // String
+  }
+  RoleInputType: { // input type
+    company?: NexusGenInputs['CompanyInputType'] | null; // CompanyInputType
+    name?: string | null; // String
+    skills?: Array<NexusGenInputs['SkillInputType'] | null> | null; // [SkillInputType]
+  }
+  SkillInputType: { // input type
+    name?: string | null; // String
+    roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
+  }
+  TradeInputType: { // input type
+    company?: NexusGenInputs['CompanyInputType'] | null; // CompanyInputType
+    name?: string | null; // String
+  }
 }
 
 export interface NexusGenEnums {
@@ -196,7 +222,10 @@ export interface NexusGenArgTypes {
       bio: string; // String!
       contactPerson: string; // String!
       email: string; // String!
+      id?: number | null; // Int
       name: string; // String!
+      roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
+      trades?: Array<NexusGenInputs['TradeInputType'] | null> | null; // [TradeInputType]
       website: string; // String!
     }
     createIndustry: { // args
@@ -209,6 +238,7 @@ export interface NexusGenArgTypes {
       name: string; // String!
     }
     createTrade: { // args
+      company?: NexusGenInputs['CompanyInputType'] | null; // CompanyInputType
       name: string; // String!
     }
     deleteCompany: { // args
@@ -275,7 +305,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 

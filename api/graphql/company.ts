@@ -1,5 +1,17 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { arg, extendType, inputObjectType, intArg, list, nonNull, objectType, stringArg } from "nexus";
 
+export const CompanyInputType = inputObjectType({
+    name: 'CompanyInputType',
+    definition(t) {
+        t.string('name')
+        t.string('contactPerson')
+        t.string('bio')
+        t.string('email')
+        t.string('website')
+        t.list.field('trades', {type: 'TradeInputType'})
+        t.list.field('roles', {type: 'RoleInputType'})
+    }
+})
 
 export const Company = objectType({
     name: 'Company',
@@ -81,13 +93,26 @@ export const CompanyMutation = extendType({
         t.nonNull.field('createCompany', {
             type: 'Company',
             args: {
+                id: intArg(),
                 name: nonNull(stringArg()),
                 contactPerson: nonNull(stringArg()),
                 bio: nonNull(stringArg()),
                 email: nonNull(stringArg()),
                 website: nonNull(stringArg()),
+                trades: arg({
+                    type: list('TradeInputType'),
+                }),
+                roles: arg({
+                    type: list('RoleInputType')
+                })
             },
             resolve(_root, args, ctx) {
+                const newTrade = args.trades?.map((trade) => {
+                    return { name: trade?.name }
+                  }) || [];
+                  const newRole= args.roles?.map((role) => {
+                    return { name: role?.name }
+                  }) || []
                 return ctx.db.company.create({
                     data: {
                         name: args.name,
@@ -95,6 +120,24 @@ export const CompanyMutation = extendType({
                         bio: args.bio,
                         email: args.email,
                         website: args.website,
+                        trades: {
+                            connectOrCreate: {
+                                where: {
+                                    id: args.id || undefined
+                                },
+                                create: newTrade ||undefined
+                               
+                            }
+                        },
+                        roles: {
+                            connectOrCreate: {
+                                where: {
+                                    id: args.id || undefined
+                                },
+                                create: newRole ||undefined
+                               
+                            }
+                        }
                     }
                 })
             }
