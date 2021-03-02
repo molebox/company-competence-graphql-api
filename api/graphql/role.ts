@@ -1,11 +1,10 @@
-import { extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { arg, list, extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+
 
 export const RoleInputType = inputObjectType({
     name: 'RoleInputType',
     definition(t) {
-        t.string('name')
-        t.field('company', {type: 'CompanyInputType'})
-        t.list.field('skills', {type: 'SkillInputType'})
+        t.int('id')
     }
 })
 
@@ -22,6 +21,14 @@ export const Role = objectType({
                 }).company()
             }
         })
+        t.list.field('skills', {
+            type: 'Skill',
+            resolve: (parent, _, ctx) => {
+                return ctx.db.role.findUnique({
+                    where: {id: parent.id || undefined}
+                }).skills()
+            }
+        })
     }
 })
 
@@ -33,11 +40,20 @@ export const RoleMutation = extendType({
             type: 'Role',
             args: {
                 name: nonNull(stringArg()),
+                skillId: intArg(),
+                skills: arg({
+                    type: list('SkillInputType')
+                })
             },
             resolve(_root, args, ctx) {
                 return ctx.db.role.create({
                     data: {
                         name: args.name,
+                        skills: {
+                            connect: [
+                                {id: args.skillId || undefined}
+                            ]
+                        }
                     }
                 })
             }
@@ -47,13 +63,22 @@ export const RoleMutation = extendType({
             type: 'Role',
             args: {
                 id: nonNull(intArg()),
-                name: nonNull(stringArg()),
+                name: stringArg(),
+                skillId: intArg(),
+                skills: arg({
+                    type: list('SkillInputType')
+                })
             },
             resolve(_root, args, ctx) {
                 return ctx.db.role.update({
                     where: {id: args.id},
                     data: {
                         name: args.name,
+                        skills: {
+                            connect: [
+                                {id: args.skillId || undefined}
+                            ]
+                        }
                     }
                 })
             }

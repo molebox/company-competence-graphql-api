@@ -15,30 +15,19 @@ declare global {
 
 export interface NexusGenInputs {
   CompanyInputType: { // input type
-    bio?: string | null; // String
-    contactPerson?: string | null; // String
-    email?: string | null; // String
-    name?: string | null; // String
-    roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
-    trades?: Array<NexusGenInputs['TradeInputType'] | null> | null; // [TradeInputType]
-    website?: string | null; // String
+    id?: number | null; // Int
   }
   IndustryInputType: { // input type
-    companies?: Array<NexusGenInputs['CompanyInputType'] | null> | null; // [CompanyInputType]
-    name?: string | null; // String
+    industryId?: number | null; // Int
   }
   RoleInputType: { // input type
-    company?: NexusGenInputs['CompanyInputType'] | null; // CompanyInputType
-    name?: string | null; // String
-    skills?: Array<NexusGenInputs['SkillInputType'] | null> | null; // [SkillInputType]
+    id?: number | null; // Int
   }
   SkillInputType: { // input type
-    name?: string | null; // String
-    roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
+    id?: number | null; // Int
   }
   TradeInputType: { // input type
-    company?: NexusGenInputs['CompanyInputType'] | null; // CompanyInputType
-    name?: string | null; // String
+    id?: number | null; // Int
   }
 }
 
@@ -59,7 +48,10 @@ export interface NexusGenObjects {
     contactPerson?: string | null; // String
     email?: string | null; // String
     id: number; // Int!
+    industryId?: number | null; // Int
     name?: string | null; // String
+    roleId?: number | null; // Int
+    tradeId?: number | null; // Int
     website?: string | null; // String
   }
   Industry: { // root type
@@ -98,10 +90,11 @@ export interface NexusGenFieldTypes {
     contactPerson: string | null; // String
     email: string | null; // String
     id: number; // Int!
-    industry: NexusGenRootTypes['Industry'] | null; // Industry
+    industryId: number | null; // Int
     name: string | null; // String
+    roleId: number | null; // Int
     roles: NexusGenRootTypes['Role'][]; // [Role!]!
-    trades: NexusGenRootTypes['Trade'][]; // [Trade!]!
+    tradeId: number | null; // Int
     website: string | null; // String
   }
   Industry: { // field return type
@@ -141,6 +134,7 @@ export interface NexusGenFieldTypes {
     company: NexusGenRootTypes['Company'] | null; // Company
     id: number; // Int!
     name: string | null; // String
+    skills: Array<NexusGenRootTypes['Skill'] | null> | null; // [Skill]
   }
   Skill: { // field return type
     id: number; // Int!
@@ -148,7 +142,7 @@ export interface NexusGenFieldTypes {
     role: NexusGenRootTypes['Role'] | null; // Role
   }
   Trade: { // field return type
-    company: NexusGenRootTypes['Company'] | null; // Company
+    company: NexusGenRootTypes['Company'][]; // [Company!]!
     id: number; // Int!
     name: string | null; // String
   }
@@ -160,10 +154,11 @@ export interface NexusGenFieldTypeNames {
     contactPerson: 'String'
     email: 'String'
     id: 'Int'
-    industry: 'Industry'
+    industryId: 'Int'
     name: 'String'
+    roleId: 'Int'
     roles: 'Role'
-    trades: 'Trade'
+    tradeId: 'Int'
     website: 'String'
   }
   Industry: { // field return type name
@@ -203,6 +198,7 @@ export interface NexusGenFieldTypeNames {
     company: 'Company'
     id: 'Int'
     name: 'String'
+    skills: 'Skill'
   }
   Skill: { // field return type name
     id: 'Int'
@@ -224,15 +220,19 @@ export interface NexusGenArgTypes {
       email: string; // String!
       id?: number | null; // Int
       name: string; // String!
+      roleId?: number | null; // Int
       roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
-      trades?: Array<NexusGenInputs['TradeInputType'] | null> | null; // [TradeInputType]
       website: string; // String!
     }
     createIndustry: { // args
+      companies?: Array<NexusGenInputs['CompanyInputType'] | null> | null; // [CompanyInputType]
+      companyId?: number | null; // Int
       name: string; // String!
     }
     createRole: { // args
       name: string; // String!
+      skillId?: number | null; // Int
+      skills?: Array<NexusGenInputs['SkillInputType'] | null> | null; // [SkillInputType]
     }
     createSkill: { // args
       name: string; // String!
@@ -262,19 +262,25 @@ export interface NexusGenArgTypes {
       email?: string | null; // String
       id: number; // Int!
       name?: string | null; // String
+      roleId?: number | null; // Int
+      roles?: Array<NexusGenInputs['RoleInputType'] | null> | null; // [RoleInputType]
       website?: string | null; // String
     }
     updateIndustry: { // args
+      companies?: Array<NexusGenInputs['CompanyInputType'] | null> | null; // [CompanyInputType]
+      companyId?: number | null; // Int
       id: number; // Int!
-      name: string; // String!
+      name?: string | null; // String
     }
     updateRole: { // args
       id: number; // Int!
-      name: string; // String!
+      name?: string | null; // String
+      skillId?: number | null; // Int
+      skills?: Array<NexusGenInputs['SkillInputType'] | null> | null; // [SkillInputType]
     }
     updateSkill: { // args
       id: number; // Int!
-      name: string; // String!
+      name?: string | null; // String
     }
     updateTrade: { // args
       id: number; // Int!

@@ -3,8 +3,7 @@ import { extendType, inputObjectType, intArg, nonNull, objectType, stringArg } f
 export const SkillInputType = inputObjectType({
     name: 'SkillInputType',
     definition(t) {
-        t.string('name')
-        t.list.field('roles', {type: 'RoleInputType'})
+        t.int('id')
     }
 })
 
@@ -71,7 +70,7 @@ export const SkillMutation = extendType({
             type: 'Skill',
             args: {
                 id: nonNull(intArg()),
-                name: nonNull(stringArg()),
+                name: stringArg(),
             },
             resolve(_root, args, ctx) {
                 return ctx.db.skill.update({

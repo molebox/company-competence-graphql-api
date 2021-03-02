@@ -1,10 +1,9 @@
-import { extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
+import { arg, extendType, inputObjectType, intArg, list, nonNull, objectType, stringArg } from "nexus";
 
 export const IndustryInputType = inputObjectType({
     name: 'IndustryInputType',
     definition(t) {
-        t.string('name')
-        t.list.field('companies', {type: 'CompanyInputType'})
+        t.int('industryId')
     }
 })
 
@@ -57,11 +56,20 @@ export const IndustryMutation = extendType({
             type: 'Industry',
             args: {
                 name: nonNull(stringArg()),
+                companyId: intArg(),
+                companies: arg({
+                    type: list('CompanyInputType')
+                })
             },
             resolve(_root, args, ctx) {
                 return ctx.db.industry.create({
                     data: {
                         name: args.name,
+                        companies: {
+                            connect: [
+                                {id: args.companyId || undefined}
+                            ]
+                        }
                     }
                 })
             }
@@ -71,13 +79,22 @@ export const IndustryMutation = extendType({
             type: 'Industry',
             args: {
                 id: nonNull(intArg()),
-                name: nonNull(stringArg()),
+                name: stringArg(),
+                companyId: intArg(),
+                companies: arg({
+                    type: list('CompanyInputType')
+                })
             },
             resolve(_root, args, ctx) {
                 return ctx.db.industry.update({
                     where: {id: args.id},
                     data: {
                         name: args.name,
+                        companies: {
+                            connect: [
+                                {id: args.companyId || undefined}
+                            ]
+                        }
                     }
                 })
             }

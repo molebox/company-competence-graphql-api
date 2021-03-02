@@ -7,21 +7,16 @@ type Company {
   contactPerson: String
   email: String
   id: Int!
-  industry: Industry
+  industryId: Int
   name: String
+  roleId: Int
   roles: [Role!]!
-  trades: [Trade!]!
+  tradeId: Int
   website: String
 }
 
 input CompanyInputType {
-  bio: String
-  contactPerson: String
-  email: String
-  name: String
-  roles: [RoleInputType]
-  trades: [TradeInputType]
-  website: String
+  id: Int
 }
 
 type Industry {
@@ -31,14 +26,13 @@ type Industry {
 }
 
 input IndustryInputType {
-  companies: [CompanyInputType]
-  name: String
+  industryId: Int
 }
 
 type Mutation {
-  createCompany(bio: String!, contactPerson: String!, email: String!, id: Int, name: String!, roles: [RoleInputType], trades: [TradeInputType], website: String!): Company!
-  createIndustry(name: String!): Industry
-  createRole(name: String!): Role
+  createCompany(bio: String!, contactPerson: String!, email: String!, id: Int, name: String!, roleId: Int, roles: [RoleInputType], website: String!): Company!
+  createIndustry(companies: [CompanyInputType], companyId: Int, name: String!): Industry
+  createRole(name: String!, skillId: Int, skills: [SkillInputType]): Role
   createSkill(name: String!): Skill
   createTrade(company: CompanyInputType, name: String!): Trade
   deleteCompany(id: Int!): Company
@@ -46,10 +40,10 @@ type Mutation {
   deleteRole(id: Int!): Role
   deleteSkill(id: Int!): Skill
   deleteTrade(id: Int!): Trade
-  updateCompany(bio: String, contactPerson: String, email: String, id: Int!, name: String, website: String): Company
-  updateIndustry(id: Int!, name: String!): Industry
-  updateRole(id: Int!, name: String!): Role
-  updateSkill(id: Int!, name: String!): Skill
+  updateCompany(bio: String, contactPerson: String, email: String, id: Int!, name: String, roleId: Int, roles: [RoleInputType], website: String): Company
+  updateIndustry(companies: [CompanyInputType], companyId: Int, id: Int!, name: String): Industry
+  updateRole(id: Int!, name: String, skillId: Int, skills: [SkillInputType]): Role
+  updateSkill(id: Int!, name: String): Skill
   updateTrade(id: Int!, name: String!): Trade
 }
 
@@ -69,12 +63,11 @@ type Role {
   company: Company
   id: Int!
   name: String
+  skills: [Skill]
 }
 
 input RoleInputType {
-  company: CompanyInputType
-  name: String
-  skills: [SkillInputType]
+  id: Int
 }
 
 type Skill {
@@ -84,17 +77,15 @@ type Skill {
 }
 
 input SkillInputType {
-  name: String
-  roles: [RoleInputType]
+  id: Int
 }
 
 type Trade {
-  company: Company
+  company: [Company!]!
   id: Int!
   name: String
 }
 
 input TradeInputType {
-  company: CompanyInputType
-  name: String
+  id: Int
 }

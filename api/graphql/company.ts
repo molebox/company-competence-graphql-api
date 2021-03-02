@@ -3,13 +3,7 @@ import { arg, extendType, inputObjectType, intArg, list, nonNull, objectType, st
 export const CompanyInputType = inputObjectType({
     name: 'CompanyInputType',
     definition(t) {
-        t.string('name')
-        t.string('contactPerson')
-        t.string('bio')
-        t.string('email')
-        t.string('website')
-        t.list.field('trades', {type: 'TradeInputType'})
-        t.list.field('roles', {type: 'RoleInputType'})
+        t.int('id')
     }
 })
 
@@ -22,22 +16,9 @@ export const Company = objectType({
         t.string('bio')
         t.string('email')
         t.string('website')
-        t.field('industry', {
-            type: 'Industry',
-            resolve: (parent, _, ctx) => {
-                return ctx.db.company.findUnique({
-                    where: {id: parent.id}
-                }).industry()
-            }
-        })
-        t.nonNull.list.nonNull.field('trades', {
-            type: 'Trade',
-            resolve: (parent, _, ctx) => {
-                return ctx.db.company.findUnique({
-                    where: {id: parent.id}
-                }).trades()
-            }
-        })
+        t.int('tradeId')
+        t.int('roleId')
+        t.int('industryId')
         t.nonNull.list.nonNull.field('roles', {
             type: 'Role',
             resolve: (parent, _, ctx) => {
@@ -71,12 +52,6 @@ export const CompanyQuery = extendType({
                 })
             }
         })
-        t.list.field('trades', {
-            type: 'Trade',
-            resolve(_root, _args, ctx) {
-                return ctx.db.trade.findMany()
-            }
-        })
         t.list.field('roles', {
             type: 'Role',
             resolve(_root, _args, ctx) {
@@ -99,20 +74,12 @@ export const CompanyMutation = extendType({
                 bio: nonNull(stringArg()),
                 email: nonNull(stringArg()),
                 website: nonNull(stringArg()),
-                trades: arg({
-                    type: list('TradeInputType'),
-                }),
+                roleId: intArg(),
                 roles: arg({
                     type: list('RoleInputType')
                 })
             },
             resolve(_root, args, ctx) {
-                const newTrade = args.trades?.map((trade) => {
-                    return { name: trade?.name }
-                  }) || [];
-                  const newRole= args.roles?.map((role) => {
-                    return { name: role?.name }
-                  }) || []
                 return ctx.db.company.create({
                     data: {
                         name: args.name,
@@ -120,23 +87,10 @@ export const CompanyMutation = extendType({
                         bio: args.bio,
                         email: args.email,
                         website: args.website,
-                        trades: {
-                            connectOrCreate: {
-                                where: {
-                                    id: args.id || undefined
-                                },
-                                create: newTrade ||undefined
-                               
-                            }
-                        },
                         roles: {
-                            connectOrCreate: {
-                                where: {
-                                    id: args.id || undefined
-                                },
-                                create: newRole ||undefined
-                               
-                            }
+                            connect: [
+                                {id: args.roleId || undefined}, 
+                            ]
                         }
                     }
                 })
@@ -152,6 +106,10 @@ export const CompanyMutation = extendType({
                 bio: stringArg(),
                 email: stringArg(),
                 website: stringArg(),
+                roleId: intArg(),
+                roles: arg({
+                    type: list('RoleInputType')
+                })
             },
             resolve(_root, args, ctx) {
                 return ctx.db.company.update({
@@ -162,6 +120,11 @@ export const CompanyMutation = extendType({
                         bio: args.bio,
                         email: args.email,
                         website: args.website,
+                        roles: {
+                            connect: [
+                                {id: args.roleId || undefined}, 
+                            ]
+                        }
                     }
                 })
             }

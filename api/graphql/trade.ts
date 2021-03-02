@@ -1,11 +1,9 @@
 import { arg, extendType, inputObjectType, intArg, nonNull, objectType, stringArg } from "nexus";
-import { RoleMutation } from './role';
 
 export const TradeInputType = inputObjectType({
     name: 'TradeInputType',
     definition(t) {
-        t.string('name')
-        t.field('company', {type: 'CompanyInputType'})
+        t.int('id')
     }
 })
 
@@ -14,12 +12,12 @@ export const Trade = objectType({
     definition(t) {
         t.nonNull.int('id')
         t.string('name')
-        t.field('company', { // nullable by default
+        t.nonNull.list.nonNull.field('company', { // nullable by default
             type: 'Company',
             resolve: (parent, _, ctx) => {
                 return ctx.db.trade.findUnique({
                     where: {id: parent.id || undefined}
-                }).company()
+                }).companies()
             }
         })
     }
@@ -63,19 +61,16 @@ export const TradeMutation = extendType({
                 })
             },
             resolve(_root, args, ctx) {
-                const newCompany = {
-                    name: args.company?.name,
-                    email: args.company?.email,
-                    bio: args.company?.bio,
-                    website: args.company?.website,
-                    contactPerson: args.company?.contactPerson
-                }
+                // const newCompany = {
+                //     name: args.company?.name,
+                //     email: args.company?.email,
+                //     bio: args.company?.bio,
+                //     website: args.company?.website,
+                //     contactPerson: args.company?.contactPerson
+                // }
                 return ctx.db.trade.create({
                     data: {
                         name: args.name,
-                        company: {
-                            create: newCompany
-                        }
                     }
                 })
             }
