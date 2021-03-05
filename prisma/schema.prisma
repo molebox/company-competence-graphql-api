@@ -10,13 +10,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// one to many relationship between industry and company. An industry can have many companies, where as a company can belong to only one industry
-
 // video on relations: https://www.youtube.com/watch?v=jeHJbYLCgzI&ab_channel=Prisma
 
 // 1-n with trade and role
 // company can have many roles
-// company can have many trades
 model Company {
   id            Int       @id @default(autoincrement())
   name          String?
@@ -24,26 +21,8 @@ model Company {
   bio           String?
   email         String?
   website       String?
-  // industry      Industry? @relation(fields: [industryId], references: [id])
-  // industryId    Int?
-  // trade         Trade?    @relation(fields: [tradeId], references: [id])
-  // tradeId       Int?
   roles         Role[]
 }
-
-// 1-n with company - industry can have many companies
-// model Industry {
-//   id        Int       @id @default(autoincrement())
-//   name      String?
-//   companies Company[]
-// }
-
-// 1-n with company - a trade can have many companies
-// model Trade {
-//   id        Int       @id @default(autoincrement())
-//   name      String?
-//   companies Company[]
-// }
 
 // 1-n with skill, n-1 with company
 // a role can have many skills

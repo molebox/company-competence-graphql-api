@@ -16,9 +16,7 @@ export const Company = objectType({
         t.string('bio')
         t.string('email')
         t.string('website')
-        t.int('tradeId')
         t.int('roleId')
-        t.int('industryId')
         t.nonNull.list.nonNull.field('roles', {
             type: 'Role',
             resolve: (parent, _, ctx) => {
