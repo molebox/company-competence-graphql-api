@@ -1,11 +1,4 @@
-import { arg, extendType, inputObjectType, intArg, list, nonNull, objectType, stringArg } from "nexus";
-
-export const CompanyInputType = inputObjectType({
-    name: 'CompanyInputType',
-    definition(t) {
-        t.int('id')
-    }
-})
+import { arg, extendType, intArg, list, nonNull, objectType, stringArg } from "nexus";
 
 export const Company = objectType({
     name: 'Company',
